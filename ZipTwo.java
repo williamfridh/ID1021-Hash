@@ -1,7 +1,9 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 
-public class Zip {
+
+
+public class ZipTwo {
 
     Node[] data;
     int max;
@@ -14,9 +16,10 @@ public class Zip {
     public class Node {
         
         int population;
-        String code, name;  // Note that code is of type string due to its formating.
+        Integer code;
+        String name;  // Note that code is of type string due to its formating.
 
-        Node (String c, String n, int p) {
+        Node (Integer c, String n, int p) {
             code = c;
             population = p;
             name = n;
@@ -33,14 +36,15 @@ public class Zip {
      * Read CSV file. Code given by teacher.
      * @param file to read.
      */
-    Zip(String file) {
+    ZipTwo(String file) {
         data = new Node[10000];
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
             int i = 0;
             while ((line = br.readLine()) != null) {
                 String[] row = line.split(",");
-                data[i++] = new Node(row[0], row[1], Integer.valueOf(row[2]));
+                Integer code = Integer.valueOf(row[0].replaceAll("\\s",""));
+                data[i++] = new Node(code, row[1], Integer.valueOf(row[2]));
             }
             max = i-1;
         } catch (Exception e) {
@@ -53,7 +57,7 @@ public class Zip {
     /**
      * Linear search.
      */
-    Node linearSearch(String zip) {
+    Node linearSearch(Integer zip) {
         for (Node n : data)
             if (n == null)
                 return null;
@@ -66,10 +70,10 @@ public class Zip {
     /**
      * Binary search.
      */
-    Node binarySearch (String zip) {
+    Node binarySearch (Integer zip) {
         return binarySearch(zip, 0, max);
     }
-    Node binarySearch (String zip, int start, int end) {
+    Node binarySearch (Integer zip, int start, int end) {
         if (start == end && data[start].code.compareTo(zip) != 0)
             return null;
 
