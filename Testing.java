@@ -15,12 +15,31 @@ public class Testing {
         if (ttt != null)
             System.out.println(ttt.stringify());*/
 
-        Integer[] zips = {11115, 98499};
-        int tries = 200000;
+        Integer[] zips = {11115, 22735, 35246, 44191, 59162, 69460, 73791, 98499};
+        int tries = 20000;
         benchmarkThree(z, zips, tries);
+            System.out.println();
 
-        ZipFive zz = new ZipFive("postnummer.csv");
-        benchmarkFour(zz, zips, tries);
+        System.out.println("=========== slightly better? ===========");
+            System.out.println();
+
+        ZipFive zz;
+        int[] mods = {13513, 15331, 17321, 19319};
+        for ( int mod : mods) {
+            System.out.println("MOD: " + mod);
+            zz = new ZipFive("postnummer.csv", mod);
+            benchmarkFour(zz, zips, tries);
+            /*System.out.println(zz.lookupTwo(11115));
+            System.out.println(zz.lookupTwo(22735));
+            System.out.println(zz.lookupTwo(42353));
+            System.out.println(zz.lookupTwo(61293));
+            System.out.println(zz.lookupTwo(74350));
+            System.out.println(zz.lookupTwo(98499));*/
+            System.out.println();
+        }
+
+        //z.collisions(10000);
+        //z.collisions(13513);
 
     }
 
@@ -131,7 +150,7 @@ public class Testing {
                     best_lookup = n;
 
             }
-            System.out.printf("%s\t&\t%.0f\n", zip, best_lookup);
+            System.out.printf("%s\t&\t%.0f\n", zip, best_lookup/1000);
         }
 
     }
@@ -140,7 +159,7 @@ public class Testing {
 
     static void benchmarkFour(ZipFive z, Integer[] zips, int tries) {
 
-        System.out.printf("Zip\t\tLookup\n");
+        System.out.printf("Zip\t\tLookup\t\tLookups\n");
 
         for (Integer zip : zips) {
 
@@ -150,23 +169,24 @@ public class Testing {
             double n0,n1,n;
 
             // Warm up.
-            for (int i = 0; i < 100; i++) {
+            for (int i = 0; i < 1000; i++) {
                 z.lookup(zip);
             }
 
             // Meassuring.
+            int lookups = 0;
             for (int j = 0; j < tries; j++) {
 
                 n0 = System.nanoTime();
                 for (int k = 0; k < 1000; k++)
-                    z.lookup(zip);
+                    lookups = z.lookupTwo(zip);
                 n1 = System.nanoTime();
                 n = n1 - n0;
                 if (n < best_lookup)
                     best_lookup = n;
 
             }
-            System.out.printf("%s\t&\t%.0f\n", zip, best_lookup);
+            System.out.printf("%s\t&\t%.0f\t&\t%d\n", zip, best_lookup/1000, lookups);
         }
 
     }

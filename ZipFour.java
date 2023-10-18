@@ -9,6 +9,7 @@ public class ZipFour {
 
     Node[] data;
     int max, mod;
+    int[] keys;
 
     Node[][] hash_table;
 
@@ -42,8 +43,11 @@ public class ZipFour {
      */
     ZipFour(String file) {
         //data = new Node[100000];
-        mod = 10000;
-        hash_table = new Node[10000][1];
+        max = 0;
+        mod = 13513;
+        hash_table = new Node[mod*2][1];
+        keys = new int[9675];
+        int j = 0;
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
             int i = 0;
@@ -52,8 +56,12 @@ public class ZipFour {
                 Integer code = Integer.valueOf(row[0].replaceAll("\\s",""));
                 //data[code] = new Node(code, row[1], Integer.valueOf(row[2]));
                 bucketAdd(new Node(code, row[1], Integer.valueOf(row[2])));
+                //keys[j++] = code % mod;
+                keys[j] = code % mod;
+                //System.out.println(code % mod);
+                j++;
+                max++;
             }
-            max = i-1;
         } catch (Exception e) {
             System.out.println(" file " + file + " not found");
         }
@@ -92,6 +100,24 @@ public class ZipFour {
             if (zip.compareTo(k.code) == 0)
                 return k;
         return null;
+    }
+
+
+    public void collisions(int mod) {
+        int[] data = new int[mod];
+        int[] cols = new int[10];
+        for (int i = 0; i < max; i++) {
+            //System.out.println(i);
+            Integer index = keys[i] % mod;
+            cols[data[index]]++;
+            data[index]++;
+        }
+
+        System.out.print(mod);
+        for (int i = 0; i < 10; i++) {
+            System.out.print("\t" + cols[i]);
+        }
+        System.out.println();
     }
 
 }

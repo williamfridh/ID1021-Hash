@@ -39,9 +39,9 @@ public class ZipFive {
      * Read CSV file. Code given by teacher.
      * @param file to read.
      */
-    ZipFive(String file) {
-        mod = 10000; // 9713 is fast for 199843 ZIP CODE
-        hash_table = new Node[15000];
+    ZipFive(String file, int m) {
+        mod = m;
+        hash_table = new Node[mod*2];
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
             int i = 0;
@@ -54,7 +54,7 @@ public class ZipFive {
         } catch (Exception e) {
             System.out.println(" file " + file + " not found");
         }
-        System.out.println(Arrays.toString(hash_table));
+        //System.out.println(Arrays.toString(hash_table));
     }
 
 
@@ -82,6 +82,17 @@ public class ZipFive {
             i++;
         }
         return hash_table[i];
+    }
+    int lookupTwo (Integer zip) {
+        int i = zip % mod;
+        int j = 0;
+        while (hash_table[i].code.compareTo(zip) != 0) {
+            if (hash_table[i] == null)
+                return -1;
+            i++;
+            j++;
+        }
+        return j;
     }
 
 }
